@@ -31,3 +31,7 @@ export async function createWishlistItem(
 export async function getWishlistItems(userId: string): Promise<WishlistItem[]> {
     return await wishlistAccess.getWishlistItems(userId)
 }
+
+export async function getWishlistItemById(itemId: string, userId: string): Promise<WishlistItem> {
+    return await wishlistAccess.getWishlistItemById(itemId, userId)
+}

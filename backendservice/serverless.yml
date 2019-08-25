@@ -36,6 +36,20 @@ custom:
 
 
 functions:
+  GetWishlistItemById:
+    handler: src/lambda/http/getWishlistItemById.handler
+    events:
+      - http:
+          method: get
+          path: wishlistitems/{wishlistItemId}
+          cors: true
+
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WISHLIST_TABLE}
+
   GetWishlistItems:
     handler: src/lambda/http/getWishlistItems.handler
     events:

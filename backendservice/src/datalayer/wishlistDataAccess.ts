@@ -34,6 +34,18 @@ export class WishlistDataAccess {
         const items = result.Items
         return items as WishlistItem[]
     }
+
+    async getWishlistItemById(itemId: string, userId: string): Promise<WishlistItem> {
+        const result = await this.docClient.get({
+            TableName: this.wishlistTable,
+            Key: {
+                wishlistItemId: itemId,
+                userId: userId
+            }
+        }).promise()
+
+        return result.Item as WishlistItem
+    }
 }
 
 function createDynamoDBClient() {
