@@ -36,6 +36,21 @@ custom:
 
 
 functions:
+  DeleteWishlistItemById:
+    handler: src/lambda/http/deleteWishlistItemById.handler
+    events:
+      - http:
+          method: delete
+          path: wishlistitems/{wishlistItemId}
+          cors: true
+
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WISHLIST_TABLE}
+  
   GetWishlistItemById:
     handler: src/lambda/http/getWishlistItemById.handler
     events:

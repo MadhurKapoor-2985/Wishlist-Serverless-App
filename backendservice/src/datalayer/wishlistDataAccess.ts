@@ -46,6 +46,29 @@ export class WishlistDataAccess {
 
         return result.Item as WishlistItem
     }
+
+    async deleteWishlistItemById(itemId: string, userId: string) {
+
+        let params = {
+            TableName: this.wishlistTable,
+            Key: {
+                wishlistItemId: itemId,
+                userId: userId
+            }
+        }
+
+        console.log('Deleting item with key ', itemId)
+
+        await this.docClient.delete(params, function (err, data) {
+            if (err) {
+              console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+            } else {
+                console.log("Delete succeeded:", JSON.stringify(data, null, 2));
+            }
+            }).promise()
+
+
+    }
 }
 
 function createDynamoDBClient() {
