@@ -36,6 +36,23 @@ custom:
 
 
 functions:
+
+  UpdateWishlistItem:
+    handler: src/lambda/http/updateWishlistItem.handler
+    events:
+      - http:
+          method: Put
+          path: wishlistitems/{wishlistItemId}
+          cors: true
+          
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.WISHLIST_TABLE}
+  
+
   DeleteWishlistItemById:
     handler: src/lambda/http/deleteWishlistItemById.handler
     events:

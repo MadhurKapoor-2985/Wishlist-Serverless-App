@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 
 import { WishlistItem } from '../models/WishlistItem'
+import { wishlistItemUpdate } from '../models/wishlistItemUpdate';
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
@@ -45,6 +46,40 @@ export class WishlistDataAccess {
         }).promise()
 
         return result.Item as WishlistItem
+    }
+
+    async updateWishlistItem(itemId: string, userId: string, itemUpdate: wishlistItemUpdate) {
+
+        var params = {
+            TableName: this.wishlistTable,
+            Key: {
+              wishlistItemId: itemId,
+              userId: userId
+            },
+            UpdateExpression: "SET #n1 = :n, #d1 = :d, #l1 = :e, #c1 = :c",
+            ExpressionAttributeValues: {
+                ':n': itemUpdate.wishlistItemName,
+                ':d': itemUpdate.wishlistItemDescription,
+                ':e': itemUpdate.wishlistItemLink,
+                ':c': itemUpdate.complete
+            },
+            ExpressionAttributeNames: {
+              "#n1": "wishlistItemName",
+              "#d1": "wishlistItemDescription",
+              "#l1": "wishlistItemLink",
+              "#c1": "complete"
+            }
+            
+          }
+          
+          await this.docClient.update(params, function(err, data) {
+            if (err) {
+                console.error("Unable to update item. Error :", JSON.stringify(err, null, 2));
+            } else {
+                console.log("Update succeeded:", JSON.stringify(data, null, 2));
+            }
+          }).promise()
+
     }
 
     async deleteWishlistItemById(itemId: string, userId: string) {

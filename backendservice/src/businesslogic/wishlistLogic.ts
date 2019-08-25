@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import { WishlistItem } from '../models/WishlistItem'
 import { WishlistDataAccess } from '../datalayer/wishlistDataAccess'
 import { CreateWishlistItemRequest } from '../requests/CreateWishlistItemRequest'
+import { UpdateWishlistItemRequest } from '../requests/UpdateWishlistItemRequest'
 
 const wishlistAccess = new WishlistDataAccess()
 
@@ -38,4 +39,13 @@ export async function getWishlistItemById(itemId: string, userId: string): Promi
 
 export async function deleteWishlistItemById(itemId: string, userId: string) {
     return await wishlistAccess.deleteWishlistItemById(itemId, userId)
+}
+
+export async function updateWishlistItem(itemId: string, userId: string, itemUpdate: UpdateWishlistItemRequest) {
+    return await wishlistAccess.updateWishlistItem(itemId, userId, {
+        wishlistItemName: itemUpdate.wishlistItemName,
+        wishlistItemDescription: itemUpdate.wishlistItemDescription,
+        wishlistItemLink: itemUpdate.wishlistItemLink,
+        complete: itemUpdate.complete
+    })
 }
