@@ -7,6 +7,8 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-aws-documentation
+  - serverless-reqvalidator-plugin
 
 provider:
   name: aws
@@ -20,6 +22,18 @@ provider:
     IMAGES_BUCKET: srvrless-wishlistimages-mk9239-${self:provider.stage}
     INDEX_NAME: wishlist_index
 
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: WishList API
+        description: Serverless application for maintaining Wishlist of items
+    models:
+      - name: WishlistRequest
+        contentType: application/json
+        schema: ${file(src/validationmodels/createWishlistRequest.json)}
+
 
 functions:
   CreateWishlistItem:
@@ -29,6 +43,12 @@ functions:
           method: post
           path: wishlistitems
           cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new Wishlist Item
+            description: Create a new Wishlist Item
+            requestModels: 
+              'application/json': WishlistRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -37,6 +57,15 @@ functions:
 
 resources:
   Resources:
+
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
 
     TodosTable:
       Type: AWS::DynamoDB::Table

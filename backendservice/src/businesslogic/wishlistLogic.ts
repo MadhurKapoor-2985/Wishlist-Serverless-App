@@ -18,7 +18,7 @@ export async function createWishlistItem(
             userId: loginUserId,
             wishlistItemId: itemId,
             wishlistItemName: request.wishlistItemName,
-            wishlistItemDescription: request.wishlistItemName,
+            wishlistItemDescription: request.wishlistItemDescription,
             wishlistItemLink: request.wishlistItemLink,
             complete: false,
             createdDate: new Date().toISOString(),
