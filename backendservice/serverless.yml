@@ -21,6 +21,7 @@ provider:
     WISHLIST_TABLE: Wishlist-${self:provider.stage}
     IMAGES_BUCKET: srvrless-wishlistimages-mk9239-${self:provider.stage}
     INDEX_NAME: wishlist_index
+    urlExpiration: 300
 
 custom:
   documentation:
@@ -37,6 +38,21 @@ custom:
 
 functions:
 
+  GetItemUploadUrl:
+    handler: src/lambda/http/getUploadUrl.handler
+    events:
+      - http:
+          method: Get
+          path: wishlistitems/{wishlistItemId}/uploadUrl
+          cors: true
+    
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+
   UpdateWishlistItem:
     handler: src/lambda/http/updateWishlistItem.handler
     events:
@@ -44,7 +60,7 @@ functions:
           method: Put
           path: wishlistitems/{wishlistItemId}
           cors: true
-          
+
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -149,3 +165,36 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index
+
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.IMAGES_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - 
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: MyPolicy
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*'
+        Bucket: !Ref ImagesBucket

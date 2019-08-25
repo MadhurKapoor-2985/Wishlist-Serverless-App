@@ -10,7 +10,12 @@ export class WishlistDataAccess {
     constructor(
         private readonly docClient: AWS.DynamoDB.DocumentClient = createDynamoDBClient(),
         private readonly wishlistTable = process.env.WISHLIST_TABLE,
-        private readonly indexName = process.env.INDEX_NAME
+        private readonly indexName = process.env.INDEX_NAME,
+        private readonly imagesBucket = process.env.IMAGES_BUCKET,
+        private readonly urlExpiration = process.env.urlExpiration,
+        private readonly s3 = new XAWS.S3({
+            signatureVersion: 'v4'
+          })
     ) { }
 
     async createWishlistItem(item: WishlistItem): Promise<WishlistItem> {
@@ -46,6 +51,16 @@ export class WishlistDataAccess {
         }).promise()
 
         return result.Item as WishlistItem
+    }
+
+    async getItemUploadUrl(itemId: string): Promise<string> {
+
+        return this.s3.getSignedUrl('putObject', {
+            Bucket: this.imagesBucket,
+            Key: itemId,
+            Expires: parseInt(this.urlExpiration)
+          })
+
     }
 
     async updateWishlistItem(itemId: string, userId: string, itemUpdate: wishlistItemUpdate) {

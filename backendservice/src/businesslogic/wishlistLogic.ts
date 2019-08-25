@@ -49,3 +49,7 @@ export async function updateWishlistItem(itemId: string, userId: string, itemUpd
         complete: itemUpdate.complete
     })
 }
+
+export async function getItemUploadUrl(itemId: string): Promise<string> {
+    return await wishlistAccess.getItemUploadUrl(itemId)
+}
