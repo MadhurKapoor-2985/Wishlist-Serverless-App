@@ -42,7 +42,7 @@ functions:
     handler: src/lambda/http/getUploadUrl.handler
     events:
       - http:
-          method: Get
+          method: post
           path: wishlistitems/{wishlistItemId}/uploadUrl
           cors: true
     
@@ -57,7 +57,7 @@ functions:
     handler: src/lambda/http/updateWishlistItem.handler
     events:
       - http:
-          method: Put
+          method: patch
           path: wishlistitems/{wishlistItemId}
           cors: true
 
