@@ -141,7 +141,7 @@ renderWishlistItems() {
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {item.wishlistItemName}
+                {item.wishlistItemName} 
                </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
                 {item.wishlistItemDescription}
