@@ -3,10 +3,11 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
 import { deleteWishlistItemById, getWishlistItemById } from '../../businesslogic/wishlistLogic'
+import { getUserId } from '../../lambda/utils'
 
 export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const itemId = event.pathParameters.wishlistItemId
-    const userId = 'test'
+    const userId = getUserId(event)
 
     const item = await getWishlistItemById(itemId, userId)
 

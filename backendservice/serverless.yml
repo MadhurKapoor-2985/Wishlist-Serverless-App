@@ -10,6 +10,10 @@ plugins:
   - serverless-aws-documentation
   - serverless-reqvalidator-plugin
 
+tracing:
+  lambda: true
+  apiGateway: true
+
 provider:
   name: aws
   runtime: nodejs10.x
@@ -38,6 +42,9 @@ custom:
 
 functions:
 
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
+
   GetItemUploadUrl:
     handler: src/lambda/http/getUploadUrl.handler
     events:
@@ -45,6 +52,7 @@ functions:
           method: post
           path: wishlistitems/{wishlistItemId}/uploadUrl
           cors: true
+          authorizer: Auth
     
     iamRoleStatements:
       - Effect: Allow
@@ -60,6 +68,7 @@ functions:
           method: patch
           path: wishlistitems/{wishlistItemId}
           cors: true
+          authorizer: Auth
 
     iamRoleStatements:
       - Effect: Allow
@@ -76,6 +85,7 @@ functions:
           method: delete
           path: wishlistitems/{wishlistItemId}
           cors: true
+          authorizer: Auth
 
     iamRoleStatements:
       - Effect: Allow
@@ -91,6 +101,7 @@ functions:
           method: get
           path: wishlistitems/{wishlistItemId}
           cors: true
+          authorizer: Auth
 
     iamRoleStatements:
       - Effect: Allow
@@ -105,6 +116,7 @@ functions:
           method: get
           path: wishlistitems
           cors: true
+          authorizer: Auth
 
     iamRoleStatements:
       - Effect: Allow
@@ -119,6 +131,7 @@ functions:
           method: post
           path: wishlistitems
           cors: true
+          authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
             summary: Create a new Wishlist Item

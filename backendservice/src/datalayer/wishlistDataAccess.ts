@@ -28,6 +28,7 @@ export class WishlistDataAccess {
     }
 
     async getWishlistItems(userId: string): Promise<WishlistItem[]> {
+        console.log('Getting items for User ', userId)
         const result = await this.docClient.query({
             TableName: this.wishlistTable,
             IndexName: this.indexName,
@@ -42,6 +43,7 @@ export class WishlistDataAccess {
     }
 
     async getWishlistItemById(itemId: string, userId: string): Promise<WishlistItem> {
+        console.log('Getting item with id ', itemId)
         const result = await this.docClient.get({
             TableName: this.wishlistTable,
             Key: {
@@ -54,6 +56,7 @@ export class WishlistDataAccess {
     }
 
     async getItemUploadUrl(itemId: string): Promise<string> {
+        console.log('Getting uploadUrl for id', itemId)
 
         return this.s3.getSignedUrl('putObject', {
             Bucket: this.imagesBucket,
@@ -64,6 +67,8 @@ export class WishlistDataAccess {
     }
 
     async updateWishlistItem(itemId: string, userId: string, itemUpdate: wishlistItemUpdate) {
+
+        console.log('Updating item with Id', itemId)
 
         var params = {
             TableName: this.wishlistTable,

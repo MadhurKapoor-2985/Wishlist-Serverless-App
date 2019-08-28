@@ -4,9 +4,10 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 
 import { updateWishlistItem, getWishlistItemById } from '../../businesslogic/wishlistLogic'
 import { UpdateWishlistItemRequest } from '../../requests/UpdateWishlistItemRequest'
+import { getUserId } from '../../lambda/utils'
 
 export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const userId = 'test'
+    const userId = getUserId(event)
     const itemId = event.pathParameters.wishlistItemId
 
     const itemUpdate: UpdateWishlistItemRequest = JSON.parse(event.body)
